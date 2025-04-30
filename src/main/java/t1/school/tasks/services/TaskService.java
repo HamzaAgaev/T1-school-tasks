@@ -2,6 +2,7 @@ package t1.school.tasks.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import t1.school.tasks.aspects.annotations.*;
 import t1.school.tasks.dtos.TaskDTO;
 import t1.school.tasks.entities.TaskEntity;
 import t1.school.tasks.exceptions.NoSuchTaskException;
@@ -18,11 +19,21 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
 
+    @LogStart
+    @LogExecutionTime
+    @LogEnd
+    @LogResult
+    @LogException
     public TaskDTO addTask(TaskDTO dto) {
         TaskEntity entity = taskMapper.toEntity(dto);
         return taskMapper.toDTO(taskRepository.save(entity));
     }
 
+    @LogStart
+    @LogExecutionTime
+    @LogEnd
+    @LogResult
+    @LogException
     public TaskDTO updateTaskById(Long id, TaskDTO dto) {
         Optional<TaskEntity> taskOptional = taskRepository.findById(id);
         if (taskOptional.isEmpty()) {
@@ -33,12 +44,22 @@ public class TaskService {
         return taskMapper.toDTO(taskRepository.save(entity));
     }
 
+    @LogStart
+    @LogExecutionTime
+    @LogEnd
+    @LogResult
+    @LogException
     public TaskDTO deleteTaskById(Long id) {
         TaskDTO taskDTO = getTaskById(id);
         taskRepository.deleteById(id);
         return taskDTO;
     }
 
+    @LogStart
+    @LogExecutionTime
+    @LogEnd
+    @LogResult
+    @LogException
     public TaskDTO getTaskById(Long id) {
         Optional<TaskEntity> taskOptional = taskRepository.findById(id);
         if (taskOptional.isEmpty()) {
@@ -47,6 +68,11 @@ public class TaskService {
         return taskMapper.toDTO(taskOptional.get());
     }
 
+    @LogStart
+    @LogExecutionTime
+    @LogEnd
+    @LogResult
+    @LogException
     public List<TaskDTO> getAllTasks() {
         return taskMapper.toDTOs(taskRepository.findAll());
     }
