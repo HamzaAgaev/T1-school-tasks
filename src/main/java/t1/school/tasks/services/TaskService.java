@@ -10,7 +10,6 @@ import t1.school.tasks.mappers.TaskMapper;
 import t1.school.tasks.repositories.TaskRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,10 +34,7 @@ public class TaskService {
     @LogResult
     @LogException
     public TaskDTO updateTaskById(Long id, TaskDTO dto) {
-        Optional<TaskEntity> taskOptional = taskRepository.findById(id);
-        if (taskOptional.isEmpty()) {
-            throw new NoSuchTaskException(id);
-        }
+        taskRepository.findById(id).orElseThrow(() -> new NoSuchTaskException(id));
         dto.setId(id);
         TaskEntity entity = taskMapper.toEntity(dto);
         return taskMapper.toDTO(taskRepository.save(entity));
@@ -61,11 +57,8 @@ public class TaskService {
     @LogResult
     @LogException
     public TaskDTO getTaskById(Long id) {
-        Optional<TaskEntity> taskOptional = taskRepository.findById(id);
-        if (taskOptional.isEmpty()) {
-            throw new NoSuchTaskException(id);
-        }
-        return taskMapper.toDTO(taskOptional.get());
+        TaskEntity entity = taskRepository.findById(id).orElseThrow(() -> new NoSuchTaskException(id));
+        return taskMapper.toDTO(entity);
     }
 
     @LogStart

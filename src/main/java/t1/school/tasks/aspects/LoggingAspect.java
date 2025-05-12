@@ -28,18 +28,15 @@ public class LoggingAspect {
         Signature signature = joinPoint.getSignature();
         String methodName = signature.getDeclaringTypeName() + "." + signature.getName();
         long startTime = System.currentTimeMillis();
-        Boolean isResultSucceed = null;
+        boolean isResultSucceed = false;
         try {
             Object result = joinPoint.proceed();
             isResultSucceed = true;
             return result;
-        } catch (Throwable throwable) {
-            isResultSucceed = false;
-            throw throwable;
         } finally {
             long endTime = System.currentTimeMillis();
             long execTime = endTime - startTime;
-            if (Boolean.TRUE.equals(isResultSucceed)) {
+            if (isResultSucceed) {
                 logger.info("Метод " + methodName + " выполнился успешно после " + execTime + " мс");
             } else {
                 logger.info("Метод " + methodName + " завершился с ошибкой после " + execTime + " мс");

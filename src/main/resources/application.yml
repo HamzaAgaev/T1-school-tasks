@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: T1-school-tasks
+  jackson:
+    default-property-inclusion: non_null
+  datasource:
+    url: jdbc:postgresql://localhost:5432/t1-school
+    username: admin
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
