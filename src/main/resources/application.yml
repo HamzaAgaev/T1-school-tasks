@@ -11,3 +11,20 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  mail:
+    host: smtp.yandex.ru
+    port: 587
+    username: username@yandex.ru
+    password: password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+app:
+  mail:
+    from: username@yandex.ru
+
