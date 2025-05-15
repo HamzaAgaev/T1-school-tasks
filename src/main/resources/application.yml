@@ -11,3 +11,54 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  mail:
+    host: smtp.yandex.ru
+    port: 587
+    username: username@yandex.ru
+    password: password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+app:
+  mail:
+    from: username@yandex.ru
+    to: username@gmail.com
+
+t1-school:
+  kafka:
+    consumer:
+      group-id: notification-group
+      enable-auto-commit: false
+      auto-offset-reset-config: earliest
+      retry:
+        interval:
+          ms: 1000
+        attempts: 3
+
+      listener:
+        concurrency: 1
+        poll:
+          timeout:
+            ms: 5000
+    producer:
+      enable-idempotence: false
+    bootstrap:
+      server: localhost:9092
+    session:
+      timeout:
+        ms: 15000
+    max:
+      partition:
+        fetch:
+          bytes: 300000
+      poll:
+        records: 1
+        interval:
+          ms: 10000
+    topic:
+      notifications: notification-topic

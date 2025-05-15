@@ -6,6 +6,7 @@ import t1.school.tasks.aspects.annotations.*;
 import t1.school.tasks.dtos.TaskDTO;
 import t1.school.tasks.entities.TaskEntity;
 import t1.school.tasks.exceptions.NoSuchTaskException;
+import t1.school.tasks.kafka.KafkaTaskProducer;
 import t1.school.tasks.mappers.TaskMapper;
 import t1.school.tasks.repositories.TaskRepository;
 
@@ -17,6 +18,7 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
+    private final KafkaTaskProducer kafkaTaskProducer;
 
     @LogStart
     @LogExecutionTime
@@ -37,6 +39,7 @@ public class TaskService {
         taskRepository.findById(id).orElseThrow(() -> new NoSuchTaskException(id));
         dto.setId(id);
         TaskEntity entity = taskMapper.toEntity(dto);
+        kafkaTaskProducer.sendToDefault("tasks", entity);
         return taskMapper.toDTO(taskRepository.save(entity));
     }
 
