@@ -6,11 +6,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "tables")
+@ToString
+@Table(name = "tasks")
 public class TaskEntity {
     @Id
     @GeneratedValue
