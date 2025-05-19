@@ -5,30 +5,30 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
-import t1.school.tasks.entities.TaskEntity;
+import t1.school.tasks.dtos.TaskDTO;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class KafkaTaskProducer {
 
-    private final KafkaTemplate<String, TaskEntity> template;
+    private final KafkaTemplate<String, TaskDTO> template;
 
-    public void sendToDefault(String key, TaskEntity task) {
-        sendTo(template.getDefaultTopic(), key, task);
+    public void sendToDefault(String key, TaskDTO taskDTO) {
+        sendTo(template.getDefaultTopic(), key, taskDTO);
     }
 
-    public void sendTo(String topic, String key, TaskEntity task) {
-        template.send(topic, key, task)
+    public void sendTo(String topic, String key, TaskDTO taskDTO) {
+        template.send(topic, key, taskDTO)
             .thenAccept(
                 sendResult -> {
                     RecordMetadata metadata = sendResult.getRecordMetadata();
-                    TaskEntity sendTask = sendResult.getProducerRecord().value();
-                    log.info("В топик " + metadata.topic() + " в партицию " + metadata.partition() + " была отправлена задача: " + sendTask);
+                    TaskDTO sendTask = sendResult.getProducerRecord().value();
+                    log.info("В топик " + metadata.topic() + " в партицию " + metadata.partition() + " было отправлено задание: " + sendTask);
                 }
             ).exceptionally(
                 exception -> {
-                    log.error("При отправке производителем задачи в брокер возникла ошибка: " + exception.getMessage(), exception);
+                    log.error("При отправке производителем задания в брокер возникла ошибка: " + exception.getMessage(), exception);
                     return null;
                 }
             );

@@ -9,6 +9,7 @@ import t1.school.tasks.exceptions.NoSuchTaskException;
 import t1.school.tasks.kafka.KafkaTaskProducer;
 import t1.school.tasks.mappers.TaskMapper;
 import t1.school.tasks.repositories.TaskRepository;
+import t1.school.tasks.utils.TaskStatus;
 
 import java.util.List;
 
@@ -36,11 +37,15 @@ public class TaskService {
     @LogResult
     @LogException
     public TaskDTO updateTaskById(Long id, TaskDTO dto) {
-        taskRepository.findById(id).orElseThrow(() -> new NoSuchTaskException(id));
+        TaskEntity oldEntity = taskRepository.findById(id).orElseThrow(() -> new NoSuchTaskException(id));
+        TaskStatus oldStatus = oldEntity.getTaskStatus();
         dto.setId(id);
-        TaskEntity entity = taskMapper.toEntity(dto);
-        kafkaTaskProducer.sendToDefault("tasks", entity);
-        return taskMapper.toDTO(taskRepository.save(entity));
+        TaskEntity newEntity = taskMapper.toEntity(dto);
+        newEntity = taskRepository.save(newEntity);
+        if (oldStatus != newEntity.getTaskStatus()) {
+            kafkaTaskProducer.sendToDefault("tasks", dto);
+        }
+        return taskMapper.toDTO(newEntity);
     }
 
     @LogStart

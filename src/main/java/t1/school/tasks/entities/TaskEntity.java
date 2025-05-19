@@ -7,6 +7,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import t1.school.tasks.utils.TaskStatus;
 
 @Getter
 @Setter
@@ -19,5 +20,6 @@ public class TaskEntity {
     private Long id;
     private String title;
     private String description;
+    private TaskStatus taskStatus;
     private Long userId;
 }

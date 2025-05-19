@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
-import t1.school.tasks.entities.TaskEntity;
+import t1.school.tasks.dtos.TaskDTO;
 import t1.school.tasks.utils.CustomJsonDeserializer;
 
 import org.springframework.context.annotation.Bean;
@@ -38,7 +38,7 @@ public class KafkaConsumerConfiguration {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaProperties.getGroupId());
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, CustomJsonDeserializer.class);
-        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "t1.school.tasks.entities.TaskEntity");
+        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "t1.school.tasks.dtos.TaskDTO");
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
         props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
         props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, kafkaProperties.getSessionTimeout());
@@ -55,18 +55,16 @@ public class KafkaConsumerConfiguration {
     }
 
     @Bean
-    public ConsumerFactory<String, TaskEntity> consumerListenerFactory() {
-
-
-        DefaultKafkaConsumerFactory<String, TaskEntity> factory = new DefaultKafkaConsumerFactory<>(buildCommonProperties());
+    public ConsumerFactory<String, TaskDTO> consumerListenerFactory() {
+        DefaultKafkaConsumerFactory<String, TaskDTO> factory = new DefaultKafkaConsumerFactory<>(buildCommonProperties());
         return factory;
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, TaskEntity> kafkaListenerContainerFactory(
-            @Qualifier("consumerListenerFactory") ConsumerFactory<String, TaskEntity> consumerFactory
+    public ConcurrentKafkaListenerContainerFactory<String, TaskDTO> kafkaListenerContainerFactory(
+            @Qualifier("consumerListenerFactory") ConsumerFactory<String, TaskDTO> consumerFactory
     ) {
-        ConcurrentKafkaListenerContainerFactory<String, TaskEntity> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        ConcurrentKafkaListenerContainerFactory<String, TaskDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         factory.setBatchListener(true);
         factory.setConcurrency(Integer.parseInt(kafkaProperties.getConcurrency()));

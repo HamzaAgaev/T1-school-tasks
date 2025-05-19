@@ -11,7 +11,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import t1.school.tasks.entities.TaskEntity;
+import t1.school.tasks.dtos.TaskDTO;
 import t1.school.tasks.kafka.KafkaTaskProducer;
 
 import java.util.HashMap;
@@ -24,13 +24,13 @@ public class KafkaProducerConfiguration {
     private final KafkaProperties kafkaProperties;
 
     @Bean
-    public KafkaTemplate<String, TaskEntity> taskTemplate(ProducerFactory<String, TaskEntity> producerFactory) {
+    public KafkaTemplate<String, TaskDTO> taskTemplate(ProducerFactory<String, TaskDTO> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
 
     @Bean
     public KafkaTaskProducer producerTask(
-            @Qualifier("taskTemplate") KafkaTemplate<String, TaskEntity> template,
+            @Qualifier("taskTemplate") KafkaTemplate<String, TaskDTO> template,
             @Value("${t1-school.kafka.topic.notifications}") String notificationTopic
     ) {
         template.setDefaultTopic(notificationTopic);
@@ -38,7 +38,7 @@ public class KafkaProducerConfiguration {
     }
 
     @Bean
-    public ProducerFactory<String, TaskEntity> producerTaskFactory() {
+    public ProducerFactory<String, TaskDTO> producerTaskFactory() {
         Map<String, Object> props = new HashMap<>();
 
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getServer());

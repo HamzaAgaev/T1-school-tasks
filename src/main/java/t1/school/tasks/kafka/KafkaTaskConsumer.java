@@ -4,7 +4,7 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
-import t1.school.tasks.entities.TaskEntity;
+import t1.school.tasks.dtos.TaskDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -20,8 +20,8 @@ public class KafkaTaskConsumer {
 
     private final NotificationService notificationService;
 
-    private String generateMessageFromTask(TaskEntity task) {
-        return "Задание с id = " + task.getId() + " было изменено. Теперь оно выглядит так: " + task + ".";
+    private String generateMessageFromTask(TaskDTO taskDTO) {
+        return "У задания с id = " + taskDTO.getId() + " был изменен статус. Теперь оно выглядит так: " + taskDTO + ".";
     }
 
     @KafkaListener(
@@ -30,19 +30,19 @@ public class KafkaTaskConsumer {
             containerFactory = "kafkaListenerContainerFactory"
     )
     public void listener(
-            @Payload List<TaskEntity> taskEntities,
+            @Payload List<TaskDTO> taskDTOs,
             Acknowledgment ack,
             @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
             @Header(KafkaHeaders.RECEIVED_KEY) String key
     ) {
         log.info("Новые сообщения топика " + topic + " с ключом " + key + " начинают обрабатываться потребителем");
         try {
-            for (TaskEntity task: taskEntities) {
-                notificationService.sendNotification("Было изменено задание", generateMessageFromTask(task));
-                log.info("Сообщение об изменении задания " + task + " было успешно отправлено потребителем на почту");
+            for (TaskDTO taskDTO: taskDTOs) {
+                notificationService.sendNotification("Был изменен статус задания", generateMessageFromTask(taskDTO));
+                log.info("Сообщение об изменении статуса задания " + taskDTO + " было успешно отправлено потребителем на почту");
             }
         } catch (Exception exception) {
-            log.error("При отправке потребителем сообщения об обновлении задачи на почту возникла ошибка: " + exception.getMessage(), exception);
+            log.error("При отправке потребителем сообщения об изменении статуса задания на почту возникла ошибка: " + exception.getMessage(), exception);
         } finally {
             try {
                 ack.acknowledge();
