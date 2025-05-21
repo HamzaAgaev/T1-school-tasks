@@ -2,7 +2,7 @@ package t1.school.tasks.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import t1.school.tasks.aspects.annotations.*;
+import t1.school.task_logstarter.aspects.annotations.*;
 import t1.school.tasks.dtos.TaskDTO;
 import t1.school.tasks.entities.TaskEntity;
 import t1.school.tasks.exceptions.NoSuchTaskException;

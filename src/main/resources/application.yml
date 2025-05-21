@@ -62,3 +62,7 @@ t1-school:
           ms: 10000
     topic:
       notifications: notification-topic
+
+custom-logging:
+  enable: true
+  level: INFO
