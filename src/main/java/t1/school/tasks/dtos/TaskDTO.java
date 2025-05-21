@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import jakarta.validation.constraints.NotNull;
 import lombok.ToString;
+import t1.school.tasks.utils.TaskStatus;
 
 @Getter
 @Setter
@@ -15,6 +16,8 @@ public class TaskDTO {
     @NotNull
     private String title;
     private String description;
+    @NotNull
+    private TaskStatus taskStatus;
     @NotNull
     private Long userId;
 }
